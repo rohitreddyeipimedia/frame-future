@@ -230,26 +230,26 @@ export default function SwipeDeck({ articles }: SwipeDeckProps) {
         </AnimatePresence>
       </div>
 
-      {/* Navigation buttons */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4 z-40 px-6">
+            {/* Navigation buttons - positioned higher to avoid overlap */}
+      <div className="absolute bottom-24 left-0 right-0 flex justify-center gap-6 z-40 px-6">
         <button
           onClick={handlePrev}
           disabled={currentIndex === 0}
-          className="w-14 h-14 rounded-full bg-gray-800/80 backdrop-blur-sm flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors"
+          className="w-12 h-12 rounded-full bg-gray-800/90 backdrop-blur-sm flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors shadow-lg"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={handleNext}
           disabled={currentIndex === articles.length - 1}
-          className="w-14 h-14 rounded-full bg-gray-800/80 backdrop-blur-sm flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors"
+          className="w-12 h-12 rounded-full bg-gray-800/90 backdrop-blur-sm flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors shadow-lg"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Swipe instruction */}
-      <div className="absolute bottom-2 left-0 right-0 text-center z-40">
+      <div className="absolute bottom-10 left-0 right-0 text-center z-40">
         <p className="text-xs text-gray-500">Swipe left/right or use arrow keys</p>
       </div>
     </div>
