@@ -13,8 +13,8 @@ async function getArticles() {
       : 'http://localhost:3000';
     
     const response = await fetch(`${baseUrl}/api/feed?window=all&limit=50`, {
-      next: { revalidate: 60 }, // Revalidate every minute
-    });
+  cache: 'no-store', // Don't cache, always fetch fresh
+});
 
     if (!response.ok) {
       console.log('API not available, using dummy data');
