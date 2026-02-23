@@ -8,7 +8,7 @@ export const revalidate = 0;
 async function getArticles() {
   try {
     // Use absolute URL for server-side fetch
-    const response = await fetch('https://frame-future.vercel.app/api/feed?window=all&limit=50', {
+    const response = await fetch('https://frame-future.vercel.app/api/feed?window=all&limit=300', {
       cache: 'no-store',
       headers: {
         'Accept': 'application/json',
