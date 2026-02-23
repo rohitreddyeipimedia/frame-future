@@ -1,0 +1,152 @@
+[
+  {
+    "name": "OpenAI Blog",
+    "rss": "https://openai.com/blog/rss.xml",
+    "default_tags": ["MODELS", "RESEARCH"]
+  },
+  {
+    "name": "Anthropic",
+    "rss": "https://www.anthropic.com/rss.xml",
+    "default_tags": ["MODELS", "RESEARCH"]
+  },
+  {
+    "name": "Google AI Blog",
+    "rss": "https://ai.googleblog.com/feeds/posts/default",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "DeepMind Blog",
+    "rss": "https://deepmind.google/blog/rss.xml",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "Microsoft Research",
+    "rss": "https://www.microsoft.com/en-us/research/feed/",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "Stability AI",
+    "rss": "https://stability.ai/blog/rss.xml",
+    "default_tags": ["TOOLS", "CREATOR"]
+  },
+  {
+    "name": "Midjourney",
+    "rss": "https://midjourney.com/rss.xml",
+    "default_tags": ["TOOLS", "CREATOR"]
+  },
+  {
+    "name": "Runway ML",
+    "rss": "https://runwayml.com/blog/rss.xml",
+    "default_tags": ["FILMMAKING", "TOOLS"]
+  },
+  {
+    "name": "NVIDIA Blog",
+    "rss": "https://blogs.nvidia.com/blog/feed/",
+    "default_tags": ["BUSINESS", "RESEARCH"]
+  },
+  {
+    "name": "Adobe Blog",
+    "rss": "https://blog.adobe.com/en/topics/ai.rss.html",
+    "default_tags": ["CREATOR", "TOOLS"]
+  },
+  {
+    "name": "TechCrunch AI",
+    "rss": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "default_tags": ["BUSINESS", "TOOLS"]
+  },
+  {
+    "name": "VentureBeat AI",
+    "rss": "https://venturebeat.com/category/ai/feed/",
+    "default_tags": ["BUSINESS", "MODELS"]
+  },
+  {
+    "name": "The Verge AI",
+    "rss": "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
+    "default_tags": ["BUSINESS", "TOOLS"]
+  },
+  {
+    "name": "Wired AI",
+    "rss": "https://www.wired.com/tag/artificial-intelligence/rss",
+    "default_tags": ["BUSINESS", "RESEARCH"]
+  },
+  {
+    "name": "MIT Technology Review",
+    "rss": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "ArXiv CS.AI",
+    "rss": "https://rss.arxiv.org/rss/cs.AI",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "ArXiv CS.CV",
+    "rss": "https://rss.arxiv.org/rss/cs.CV",
+    "default_tags": ["RESEARCH", "FILMMAKING"]
+  },
+  {
+    "name": "ArXiv CS.CL",
+    "rss": "https://rss.arxiv.org/rss/cs.CL",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "Hugging Face Blog",
+    "rss": "https://huggingface.co/blog/feed.xml",
+    "default_tags": ["TOOLS", "MODELS"]
+  },
+  {
+    "name": "Papers with Code",
+    "rss": "https://paperswithcode.com/rss",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "AI Alignment Forum",
+    "rss": "https://www.alignmentforum.org/rss.xml",
+    "default_tags": ["RESEARCH", "LEGAL"]
+  },
+  {
+    "name": "LessWrong AI",
+    "rss": "https://www.lesswrong.com/rss.xml",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "Import AI",
+    "rss": "https://importai.substack.com/feed",
+    "default_tags": ["RESEARCH", "BUSINESS"]
+  },
+  {
+    "name": "The Batch",
+    "rss": "https://read.deeplearning.ai/rss/",
+    "default_tags": ["RESEARCH", "BUSINESS"]
+  },
+  {
+    "name": "AI News",
+    "rss": "https://www.artificialintelligence-news.com/feed/",
+    "default_tags": ["BUSINESS", "TOOLS"]
+  },
+  {
+    "name": "Unite.AI",
+    "rss": "https://www.unite.ai/feed/",
+    "default_tags": ["TOOLS", "BUSINESS"]
+  },
+  {
+    "name": "Topbots",
+    "rss": "https://www.topbots.com/feed/",
+    "default_tags": ["BUSINESS", "MODELS"]
+  },
+  {
+    "name": "AI Trends",
+    "rss": "https://www.aitrends.com/feed/",
+    "default_tags": ["BUSINESS", "RESEARCH"]
+  },
+  {
+    "name": "MarkTechPost",
+    "rss": "https://www.marktechpost.com/feed/",
+    "default_tags": ["RESEARCH", "MODELS"]
+  },
+  {
+    "name": "AssemblyAI Blog",
+    "rss": "https://www.assemblyai.com/blog/rss.xml",
+    "default_tags": ["TOOLS", "MODELS"]
+  }
+]
