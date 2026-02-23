@@ -1,57 +1,141 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { fetchRSSFeed, parseRSSItems } from '@/lib/ingest/rss';
+import { generateHash, checkDuplicate } from '@/lib/ingest/dedupe';
+import { createSummary } from '@/lib/ingest/summarize';
+import { inferTags } from '@/lib/ingest/tagger';
+import sources from '@/sources/sources.json';
 
 const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const ingestSecret = process.env.INGEST_SECRET || '';
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-export async function GET(request: NextRequest) {
+interface IngestResult {
+  source: string;
+  fetched: number;
+  inserted: number;
+  skipped: number;
+  errors: string[];
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const window = searchParams.get('window') || '24h';
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
-
-    let query = supabase
-      .from('articles')
-      .select('*')
-      .order('published_at', { ascending: false })
-      .limit(limit);
-
-    // Apply time window filter
-    if (window === '24h') {
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-      query = query.gte('published_at', twentyFourHoursAgo);
-    } else if (window === '7d') {
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      query = query.gte('published_at', sevenDaysAgo);
-    } else if (window === '30d') {
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      query = query.gte('published_at', thirtyDaysAgo);
-    }
-    // 'all' or any other value returns all articles
-
-    const { data: articles, error } = await query;
-
-    if (error) {
-      console.error('Supabase error:', error);
+    // Verify secret header
+    const secretHeader = request.headers.get('x-ingest-secret');
+    if (secretHeader !== ingestSecret) {
       return NextResponse.json(
-        { error: 'Failed to fetch articles', details: error.message },
-        { status: 500 }
+        { error: 'Unauthorized' },
+        { status: 401 }
       );
     }
 
+    const searchParams = request.nextUrl.searchParams;
+    const backfillDays = parseInt(searchParams.get('backfill_days') || '7', 10);
+    const maxArticlesPerSource = parseInt(searchParams.get('max_per_source') || '20', 10);
+
+    const results: IngestResult[] = [];
+    let totalInserted = 0;
+    let totalSkipped = 0;
+
+    // Process each source
+    for (const source of sources) {
+      const result: IngestResult = {
+        source: source.name,
+        fetched: 0,
+        inserted: 0,
+        skipped: 0,
+        errors: [],
+      };
+
+      try {
+        // Fetch RSS feed
+        const items = await fetchRSSFeed(source.rss);
+        result.fetched = items.length;
+
+        // Parse items
+        const parsedArticles = parseRSSItems(items, source.name);
+
+        // Filter by date (backfill window)
+        const cutoffDate = new Date(Date.now() - backfillDays * 24 * 60 * 60 * 1000);
+        const recentArticles = parsedArticles
+          .filter(article => article.publishedAt >= cutoffDate)
+          .slice(0, maxArticlesPerSource);
+
+        // Process each article
+        for (const article of recentArticles) {
+          try {
+            // Generate hash for deduplication
+            const hash = generateHash(article.title, article.link);
+
+            // Check for duplicates
+            const isDuplicate = await checkDuplicate(supabase, article.link, hash);
+            if (isDuplicate) {
+              result.skipped++;
+              totalSkipped++;
+              continue;
+            }
+
+            // Create summary
+            const summary = createSummary(article.content || '', article.title);
+
+            // Infer tags
+            const tags = inferTags(
+              article.title,
+              article.content || '',
+              source.default_tags
+            );
+
+            // Insert into database
+            const { error: insertError } = await supabase.from('articles').insert({
+              title: article.title,
+              summary,
+              source_name: source.name,
+              source_url: article.link,
+              image_url: article.imageUrl || null,
+              published_at: article.publishedAt.toISOString(),
+              tags,
+              hash,
+            });
+
+            if (insertError) {
+              result.errors.push(`Insert error for "${article.title}": ${insertError.message}`);
+            } else {
+              result.inserted++;
+              totalInserted++;
+            }
+          } catch (articleError) {
+            const errorMsg = articleError instanceof Error ? articleError.message : 'Unknown error';
+            result.errors.push(`Processing error for "${article.title}": ${errorMsg}`);
+          }
+        }
+      } catch (sourceError) {
+        const errorMsg = sourceError instanceof Error ? sourceError.message : 'Unknown error';
+        result.errors.push(`Source error: ${errorMsg}`);
+      }
+
+      results.push(result);
+    }
+
     return NextResponse.json({
-      articles: articles || [],
-      count: articles?.length || 0,
-      window,
+      success: true,
       timestamp: new Date().toISOString(),
+      backfill_days: backfillDays,
+      total_inserted: totalInserted,
+      total_skipped: totalSkipped,
+      results,
     });
   } catch (error) {
-    console.error('Feed API error:', error);
+    console.error('Ingest API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     );
   }
+}
+
+// Also support GET for cron jobs
+export async function GET(request: NextRequest) {
+  return POST(request);
 }
