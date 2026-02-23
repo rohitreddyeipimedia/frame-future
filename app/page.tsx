@@ -12,7 +12,7 @@ async function getArticles() {
       ? `https://${process.env.VERCEL_URL}` 
       : 'http://localhost:3000';
     
-    const response = await fetch(`${baseUrl}/api/feed?window=24h&limit=50`, {
+    const response = await fetch(`${baseUrl}/api/feed?window=all&limit=50`, {
       next: { revalidate: 60 }, // Revalidate every minute
     });
 
