@@ -21,6 +21,15 @@ const tagColors: Record<string, string> = {
   RESEARCH: 'bg-cyan-500/80',
 };
 
+// Fallback images for articles without images
+const fallbackImages = [
+  'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
+  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80',
+  'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&q=80',
+  'https://images.unsplash.com/photo-1555664424-778a69022365?w=800&q=80',
+  'https://images.unsplash.com/photo-1686191128892-3b37add4a934?w=800&q=80',
+];
+
 export default function SwipeDeck({ articles }: SwipeDeckProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right' | null>(null);
@@ -32,9 +41,14 @@ export default function SwipeDeck({ articles }: SwipeDeckProps) {
   const currentArticle = articles[currentIndex];
   const progress = articles.length > 0 ? ((currentIndex + 1) / articles.length) * 100 : 0;
 
+  // Get fallback image based on article index
+  const getImageUrl = (article: Article, index: number) => {
+    if (article.image_url) return article.image_url;
+    return fallbackImages[index % fallbackImages.length];
+  };
+
   const handleDragEnd = useCallback((event: any, info: PanInfo) => {
     if (info.offset.x > SWIPE_THRESHOLD) {
-      // Swipe right - go to previous
       if (currentIndex > 0) {
         setDirection('right');
         setTimeout(() => {
@@ -43,7 +57,6 @@ export default function SwipeDeck({ articles }: SwipeDeckProps) {
         }, 150);
       }
     } else if (info.offset.x < -SWIPE_THRESHOLD) {
-      // Swipe left - go to next
       if (currentIndex < articles.length - 1) {
         setDirection('left');
         setTimeout(() => {
@@ -108,6 +121,8 @@ export default function SwipeDeck({ articles }: SwipeDeckProps) {
     );
   }
 
+  const imageUrl = getImageUrl(currentArticle, currentIndex);
+
   return (
     <div className="h-screen w-full bg-black flex flex-col relative overflow-hidden">
       {/* Progress bar at top */}
@@ -162,11 +177,11 @@ export default function SwipeDeck({ articles }: SwipeDeckProps) {
               onDragEnd={handleDragEnd}
               whileTap={{ cursor: 'grabbing' }}
             >
-              {/* Background image */}
+              {/* Background image with fallback */}
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ 
-                  backgroundImage: `url(${currentArticle.image_url})`,
+                  backgroundImage: `url(${imageUrl})`,
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
